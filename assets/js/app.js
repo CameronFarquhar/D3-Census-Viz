@@ -22,15 +22,18 @@ console.log(svg);
 var charGroup = svg.append("g")
 .attr("transform", `translate(${margin.left}, ${margin.right})`);
 
-var chosenXAxis = "poverty";
+// var chosenXAxis = "poverty";
 
-function xScale(data, d){
-    var xLinearScale = d3.scaleLinear() 
-    .domain([d3.min(data, d => d[chosenXAxis]) * 0.8,
-        d3.max(data, d =>d[chosenXAxis]) * 1.2
-        ])
-        .range([0, width]);
+// function xScale(data, d){
+//     var xLinearScale = d3.scaleLinear() 
+//     .domain([d3.min(data, d => d[chosenXAxis]) * 0.8,
+//         d3.max(data, d =>d[chosenXAxis]) * 1.2
+//         ])
+//         .range([0, width]);
         
-    return xLinearScale;
-    }
+//     return xLinearScale;
+//     }
 
+d3.csv("assets/data/data.csv").then(function(data) {
+    console.log(data);
+});
