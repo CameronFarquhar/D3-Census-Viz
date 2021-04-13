@@ -42,11 +42,11 @@ d3.csv("assets/data/data.csv").then(function(csvData) {
         data.obesity = +data.obesity;
     });
     var xLinearScale = d3.scaleLinear()
-    .domain([0, d3.max(csvData, d => d.poverty)])
-    .range([width, 0]);
+    .domain(d3.extent(csvData, d => d.poverty))
+    .range([0, width]);
 
     var yLinearScale = d3.scaleLinear()
-    .domain([0, d3.max(csvData, d => d.obesity)])
+    .domain(d3.extent(csvData, d => d.obesity))
     .range([height, 0]);
 
     var bottomAxis = d3.axisBottom(xLinearScale);
@@ -65,22 +65,24 @@ d3.csv("assets/data/data.csv").then(function(csvData) {
     .append("circle")
     .attr("cx", d => xLinearScale(d.poverty))
     .attr("cy", d => yLinearScale(d.obesity))
+    .attr("r", "5")
     .attr("fill", "blue")
-    .attr("opacity", ".3");
+    .attr("opacity", ".5");
 
     var toolTip = d3.tip()
     .attr("class", "d3-tip")
     .offset([80, -60])
     .html(function(d) {
-      return (`Poverty Level ${d.poverty}<br>Hair length: ${d.obesity}`);
+      return (`Poverty Level ${d.poverty}<br> Obesity Level: ${d.obesity}`);
     });
+
     // Step 7: Create tooltip in the chart
     // ==============================
     chartGroup.call(toolTip);
 
     // Step 8: Create event listeners to display and hide the tooltip
     // ==============================
-    circlesGroup.on("click", function(data) {
+    circlesGroup.on("mouseover", function(data) {
       toolTip.show(data, this);
     })
       // onmouseout event
