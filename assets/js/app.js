@@ -377,7 +377,7 @@ var svgHeight = 500;
 var margin = {
     top: 20,
     right: 40,
-    bottom: 80,
+    bottom: 120,
     left: 100
 };
 
@@ -440,6 +440,9 @@ function updateToolTip(chosenXAxis, circlesGroup) {
     if (chosenXAxis === "poverty") {
       label = "Poverty :";
     }
+    if (chosenXAxis === "income") {
+        label = "Income";
+    }
     else {
       label = "Age:";
     }
@@ -448,7 +451,7 @@ function updateToolTip(chosenXAxis, circlesGroup) {
       .attr("class", "d3-tip")
       .offset([80, -60])
       .html(function(d) {
-        return (`${d.abbr}<br>Poverty: ${d.obesity}% <br>${label} ${d[chosenXAxis]}%`);
+        return (`${d.abbr}<br>Obesity: ${d.obesity}% <br>${label} ${d[chosenXAxis]}%`);
       });
   
     circlesGroup.call(toolTip);
@@ -472,6 +475,8 @@ d3.csv("assets/data/data.csv").then(function(csvData) {
     csvData.forEach(function(data) {
         data.poverty = +data.poverty;
         data.age = +data.age;
+        data.income = +data.income;
+
         data.obesity = +data.obesity;
     });
 
@@ -481,11 +486,6 @@ d3.csv("assets/data/data.csv").then(function(csvData) {
     var yLinearScale = d3.scaleLinear()
     .domain([d3.min(csvData, d => d.obesity)  * 0.9, d3.max(csvData, d=> d.obesity) * 1.1])
     .range([height, 0]);
-
-    // .domain([d3.min(data, d => d[chosenXAxis]) * 0.8,
-    //     d3.max(data, d =>d[chosenXAxis]) * 1.2
-    //     ])
-    //     .range([0, width]);
 
 
     var bottomAxis = d3.axisBottom(xLinearScale);
@@ -520,9 +520,16 @@ d3.csv("assets/data/data.csv").then(function(csvData) {
     .classed("active", true)
     .text("Poverty (%)");
 
-  var ageLabel = labelsGroup.append("text")
+    var incomeLabel = labelsGroup.append("text")
     .attr("x", 0)
     .attr("y", 40)
+    .attr("value", "income") // value to grab for event listener
+    .classed("active", true)
+    .text("Income (median)");
+
+  var ageLabel = labelsGroup.append("text")
+    .attr("x", 0)
+    .attr("y", 60)
     .attr("value", "age") // value to grab for event listener
     .classed("inactive", true)
     .text("Age (median)");
@@ -570,6 +577,20 @@ d3.csv("assets/data/data.csv").then(function(csvData) {
             ageLabel
             .classed("active", false)
             .classed("inactive", true);
+            incomeLabel
+            .classed("active", false)
+            .classed("inactive", true);
+        }
+        if (chosenAxis === "income") {
+            povertyLabel
+            .classed("active", false)
+            .classed("inactive", true);
+            ageLabel
+            .classed("active", false)
+            .classed("inactive", true);
+            incomeLabel
+            .classed("active", true)
+            .classed("inactive", false);
         }
         else {
             povertyLabel
@@ -578,6 +599,9 @@ d3.csv("assets/data/data.csv").then(function(csvData) {
             ageLabel
             .classed("active", true)
             .classed("inactive", false);
+            incomeLabel
+            .classed("active", false)
+            .classed("inactive", true);
         }
       }
     });
