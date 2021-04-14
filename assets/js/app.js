@@ -439,20 +439,32 @@ function updateToolTip(chosenXAxis, circlesGroup) {
   
     if (chosenXAxis === "poverty") {
       label = "Poverty :";
-    }
-    if (chosenXAxis === "income") {
-        label = "Income";
-    }
-    else {
-      label = "Age:";
-    }
-  
-    var toolTip = d3.tip()
+      var toolTip = d3.tip()
       .attr("class", "d3-tip")
       .offset([80, -60])
       .html(function(d) {
         return (`${d.abbr}<br>Obesity: ${d.obesity}% <br>${label} ${d[chosenXAxis]}%`);
       });
+    }
+    if (chosenXAxis === "income") {
+        label = "Income";
+        var toolTip = d3.tip()
+        .attr("class", "d3-tip")
+        .offset([80, -60])
+        .html(function(d) {
+          return (`${d.abbr}<br>Obesity: ${d.obesity}% <br>${label} $${d[chosenXAxis]}`);
+        });
+    }
+    if (chosenXAxis === "age") {
+      label = "Age:";
+  
+    var toolTip = d3.tip()
+    .attr("class", "d3-tip")
+    .offset([80, -60])
+    .html(function(d) {
+      return (`${d.abbr}<br>Obesity: ${d.obesity}% <br>${label} ${d[chosenXAxis]} years old`);
+    });
+}
   
     circlesGroup.call(toolTip);
   
@@ -592,7 +604,8 @@ d3.csv("assets/data/data.csv").then(function(csvData) {
             .classed("active", true)
             .classed("inactive", false);
         }
-        else {
+        // else {
+        if (chosenAxis === "age") {
             povertyLabel
             .classed("active", false)
             .classed("inactive", true);
