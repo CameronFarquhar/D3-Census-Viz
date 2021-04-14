@@ -479,10 +479,15 @@ d3.csv("assets/data/data.csv").then(function(csvData) {
     var xLinearScale = xScale(csvData, chosenXAxis);
 
     var yLinearScale = d3.scaleLinear()
-    .domain(d3.extent(csvData, d => d.obesity))
+    .domain([d3.min(csvData, d => d.obesity)  * 0.9, d3.max(csvData, d=> d.obesity) * 1.1])
     .range([height, 0]);
 
-    
+    // .domain([d3.min(data, d => d[chosenXAxis]) * 0.8,
+    //     d3.max(data, d =>d[chosenXAxis]) * 1.2
+    //     ])
+    //     .range([0, width]);
+
+
     var bottomAxis = d3.axisBottom(xLinearScale);
     var leftAxis = d3.axisLeft(yLinearScale);
 
@@ -513,14 +518,14 @@ d3.csv("assets/data/data.csv").then(function(csvData) {
     .attr("y", 20)
     .attr("value", "poverty") // value to grab for event listener
     .classed("active", true)
-    .text("Poverty");
+    .text("Poverty (%)");
 
   var ageLabel = labelsGroup.append("text")
     .attr("x", 0)
     .attr("y", 40)
     .attr("value", "age") // value to grab for event listener
     .classed("inactive", true)
-    .text("Age");
+    .text("Age (median)");
 
     chartGroup.append("text")
     .attr("transform", "rotate(-90)")
@@ -528,7 +533,7 @@ d3.csv("assets/data/data.csv").then(function(csvData) {
     .attr("x", 0 - (height / 2))
     .attr("dy", "1em")
     .classed("axis-text", true)
-    .text("Obesity");
+    .text("Obesity (%)");
 
 
     var circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
