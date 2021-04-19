@@ -25,7 +25,7 @@ var chartGroup = svg.append("g")
 
 var chosenXAxis = "poverty";
 
-var chosenYaxis = "obesity";
+var chosenYAxis = "obesity";
 
 // function used for updating x-scale var upon click on axis label
 function xScale(data, chosenXAxis){
@@ -153,8 +153,8 @@ d3.csv("assets/data/data.csv").then(function(csvData) {
     });
 
 
-    var xLinearScale = xScale(csvData, chosenXAxis, width);
-    var yLinearScale = yScale(csvData, chosenYAxis, height);
+    var xLinearScale = xScale(csvData, chosenXAxis);
+    var yLinearScale = yScale(csvData, chosenYAxis);
 
     // var yLinearScale = d3.scaleLinear()
     // .domain([d3.min(csvData, d => d.obesity)  * 0.9, d3.max(csvData, d=> d.obesity) * 1.1])
@@ -178,7 +178,7 @@ d3.csv("assets/data/data.csv").then(function(csvData) {
     // .call(leftAxis);
 
 
-    var circlesGroup = chartGroup.selectAll("circle")
+    var circles = chartGroup.selectAll("circle")
     .data(csvData)
     .enter()
     .append("circle")
@@ -188,40 +188,19 @@ d3.csv("assets/data/data.csv").then(function(csvData) {
     .classed("stateCircle", true);
 
 
-    var circlesGroupText = chartGroup.selectAll("circle")
+    var circlesText = chartGroup.selectAll("circle")
     .data(csvData)
     .enter()
     .append("text")
     .attr("x", d => xLinearScale(d[chosenXAxis]))
-    .attr("y", d => yLinearScale(d.[chosenYaxis]))
+    .attr("y", d => yLinearScale(d[chosenYaxis]))
     .attr("dy", ".25em")
     .text(d => d.abbr)
     .classed("stateText", true);
 
-//     // // trying to get the text to appear on the circle
-    // d3.circlesGroup.selectAll("text")
-    // .data(csvData)
-    // .enter()
-    // .append("text")
-    // .attr("class", "stateText")
-    // .text(function(d){
-    //     return (`${d.abbr}`);
-    // });
+    var circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circles, circlesText);
 
-//  chartGroup.selectAll("text")
-//             .data(csvData)
-//             .enter()
-//             .append("text")
-//             .style("fill", "black")
-//             .attr("x", d => xLinearScale(d.poverty))
-//             .attr("y", d => yLinearScale(d.obesity))
-//             .attr("dy", "1em")
-//             .attr("text-anchor", "middle")
-//             .classed("stateText", true)
-//             .text(d => d.abbr);
-
-
-    var labelsGroup = chartGroup.append("g")
+    var xLabelsGroup = chartGroup.append("g")
     .attr("transform", `translate(${width / 2}, ${height + 20})`);
 
     var povertyLabel = labelsGroup.append("text")
@@ -235,7 +214,7 @@ d3.csv("assets/data/data.csv").then(function(csvData) {
     .attr("x", 0)
     .attr("y", 40)
     .attr("value", "income") // value to grab for event listener
-    .classed("active", true)
+    .classed("inactive", true)
     .text("Income (median)");
 
   var ageLabel = labelsGroup.append("text")
@@ -245,16 +224,29 @@ d3.csv("assets/data/data.csv").then(function(csvData) {
     .classed("inactive", true)
     .text("Age (median)");
 
-    chartGroup.append("text")
+    // Y labels
+
+  var yLabelsGroup = chartGroup.append("g")
+  .attr("transform", "rotate(-90)");
+
+  var obesityLabel = yLabelsGroup.append("text")
     .attr("transform", "rotate(-90)")
     .attr("y", 0 - margin.left)
     .attr("x", 0 - (height / 2))
     .attr("dy", "1em")
-    .classed("axis-text", true)
+    .attr("value", "obesity")
+    .classed("active", true)
     .text("Obesity (%)");
 
+    var smokesLabel = yLabelsGroup.append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("y", 20 - margin.left)
+    .attr("x", 0 - (height / 2))
+    .attr("dy", "1em")
+    .attr("value", "smokes")
+    .classed("inactive", true)
+    .text("Smokes (%)");
 
-    var circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
 
     labelsGroup.selectAll("text")
     .on("click", function() {
