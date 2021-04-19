@@ -102,7 +102,7 @@ function updateToolTip(chosenXAxis, circlesGroup) {
       .attr("class", "d3-tip")
       .offset([80, -60])
       .html(function(d) {
-        return (`${d.abbr}<br>Obesity: ${d.obesity}% <br>${label} ${d[chosenXAxis]}%`);
+        return (`${d.abbr}<br>Obesity: ${d.chosenYAxis}% <br>${label} ${d[chosenXAxis]}%`);
       });
     }
     if (chosenXAxis === "income") {
@@ -111,7 +111,7 @@ function updateToolTip(chosenXAxis, circlesGroup) {
         .attr("class", "d3-tip")
         .offset([80, -60])
         .html(function(d) {
-          return (`${d.abbr}<br>Obesity: ${d.obesity}% <br>${label} $${d[chosenXAxis]}`);
+          return (`${d.abbr}<br>Obesity: ${d.chosenYAxis}% <br>${label} $${d[chosenXAxis]}`);
         });
     }
     if (chosenXAxis === "age") {
@@ -121,7 +121,7 @@ function updateToolTip(chosenXAxis, circlesGroup) {
     .attr("class", "d3-tip")
     .offset([80, -60])
     .html(function(d) {
-      return (`${d.abbr}<br>Obesity: ${d.obesity}% <br>${label} ${d[chosenXAxis]} years old`);
+      return (`${d.abbr}<br>Obesity: ${d.chosenYAxis}% <br>${label} ${d[chosenXAxis]} years old`);
     });
 }
   
@@ -149,14 +149,16 @@ d3.csv("assets/data/data.csv").then(function(csvData) {
         data.income = +data.income;
 
         data.obesity = +data.obesity;
+        data.smokes = +data.smokes;
     });
 
 
-    var xLinearScale = xScale(csvData, chosenXAxis);
+    var xLinearScale = xScale(csvData, chosenXAxis, width);
+    var yLinearScale = yScale(csvData, chosenYAxis, height);
 
-    var yLinearScale = d3.scaleLinear()
-    .domain([d3.min(csvData, d => d.obesity)  * 0.9, d3.max(csvData, d=> d.obesity) * 1.1])
-    .range([height, 0]);
+    // var yLinearScale = d3.scaleLinear()
+    // .domain([d3.min(csvData, d => d.obesity)  * 0.9, d3.max(csvData, d=> d.obesity) * 1.1])
+    // .range([height, 0]);
 
 
     var bottomAxis = d3.axisBottom(xLinearScale);
@@ -168,8 +170,12 @@ d3.csv("assets/data/data.csv").then(function(csvData) {
     .attr("transform", `translate(0, ${height})`)
     .call(bottomAxis);
 
-    chartGroup.append("g")
-    .call(leftAxis);
+    var yAxis = chartGroup.append("g")
+    .call(leftAxis)
+
+
+    // chartGroup.append("g")
+    // .call(leftAxis);
 
 
     var circlesGroup = chartGroup.selectAll("circle")
@@ -177,10 +183,20 @@ d3.csv("assets/data/data.csv").then(function(csvData) {
     .enter()
     .append("circle")
     .attr("cx", d => xLinearScale(d[chosenXAxis]))
-    .attr("cy", d => yLinearScale(d.obesity))
+    .attr("cy", d => yLinearScale(d.chosenYaxis))
     .attr("r", "8")
-    .attr("class", "stateCircle");
+    .classed("stateCircle", true);
 
+
+    var circlesGroupText = chartGroup.selectAll("circle")
+    .data(csvData)
+    .enter()
+    .append("text")
+    .attr("x", d => xLinearScale(d[chosenXAxis]))
+    .attr("y", d => yLinearScale(d.[chosenYaxis]))
+    .attr("dy", ".25em")
+    .text(d => d.abbr)
+    .classed("stateText", true);
 
 //     // // trying to get the text to appear on the circle
     // d3.circlesGroup.selectAll("text")
