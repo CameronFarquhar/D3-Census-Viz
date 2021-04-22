@@ -27,20 +27,20 @@ var chosenXAxis = "poverty";
 var chosenYAxis = "healthcare";
 
 // function used for updating x-scale var upon click on axis label
-function xScale(data, chosenXAxis) {
+function xScale(csvData, chosenXAxis) {
   var xLinearScale = d3.scaleLinear()
-    .domain([d3.min(data, d => d[chosenXAxis]) * 0.8,
-    d3.max(data, d => d[chosenXAxis]) * 1.2
+    .domain([d3.min(csvData, d => d[chosenXAxis]) * 0.8,
+    d3.max(csvData, d => d[chosenXAxis]) * 1.2
     ])
     .range([0, width]);
 
   return xLinearScale;
 }
 
-function yScale(data, chosenYAxis) {
+function yScale(csvData, chosenYAxis) {
   var yLinearScale = d3.scaleLinear()
-    .domain([d3.min(data, d => d[chosenYAxis]) * 0.8,
-    d3.max(data, d => d[chosenYAxis]) * 1.2
+    .domain([d3.min(csvData, d => d[chosenYAxis]) * 0.8,
+    d3.max(csvData, d => d[chosenYAxis]) * 1.2
     ])
     .range([height, 0]);
 
@@ -128,19 +128,19 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup, textGroup) {
 
     circlesGroup.call(toolTip);
 
-    circlesGroup.on("mouseover", function(data) {
-      toolTip.show(data, this);
+    circlesGroup.on("mouseover", function(csvData) {
+      toolTip.show(csvData, this);
     })
       // onmouseout event
-      .on("mouseout", function(data, index) {
-        toolTip.hide(data);
+      .on("mouseout", function(csvData, index) {
+        toolTip.hide(csvData);
       });
       textGroup
-      .on("mouseover", function(data) {
-          toolTip.show(data, this);
+      .on("mouseover", function(csvData) {
+          toolTip.show(csvData, this);
       })
-      .on("mouseout", function(data) {
-          toolTip.hide(data);
+      .on("mouseout", function(csvData) {
+          toolTip.hide(csvData);
       });
     return circlesGroup;
 
@@ -148,7 +148,7 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup, textGroup) {
   }
 
 
-d3.csv("assets/data/data.csv").then(function (csvData, err) {
+  d3.csv("assets/data/data.csv").then(function (csvData, err) {
   console.log(csvData);
   if (err) throw err;
 
@@ -156,9 +156,9 @@ d3.csv("assets/data/data.csv").then(function (csvData, err) {
     data.poverty = +data.poverty;
     data.age = +data.age;
     data.income = +data.income;
-
-    data.obesity = +data.obesity;
+    // data.obesity = +data.obesity;
     data.smokes = +data.smokes;
+    data.healthcare = +data.healthcare;
   });
 
   var xLinearScale = xScale(csvData, chosenXAxis);
@@ -227,7 +227,7 @@ d3.csv("assets/data/data.csv").then(function (csvData, err) {
     .attr("transform", "rotate(-90)");
 
   var healthcareLabel = yLabelsGroup.append("text")
-    .attr("transform", "rotate(-0)")
+    .attr("transform", "rotate(0)")
     .attr("y", 20 - margin.left)
     .attr("x", 0 - (height / 2))
     .attr("dy", "1em")
@@ -342,7 +342,7 @@ d3.csv("assets/data/data.csv").then(function (csvData, err) {
           .classed("active", false)
           .classed("inactive", true);
       }
-      else{
+      else {
         healthcareLabel
           .classed("active", false)
           .classed("inactive", true);
@@ -358,6 +358,7 @@ d3.csv("assets/data/data.csv").then(function (csvData, err) {
 }).catch(function (error) {
   console.log(error);
 });
+
 
 
 
