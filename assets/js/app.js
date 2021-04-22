@@ -264,17 +264,17 @@ d3.csv("assets/data/data.csv").then(function (csvData) {
     // .append("circle")
     .attr("cx", d => xLinearScale(d[chosenXAxis]))
     .attr("cy", d => yLinearScale(d[chosenYAxis]))
-    .attr("r", "8")
+    .attr("r", "15")
     .classed("stateCircle", true);
 
 
-  var circlesText = elementEnter.append("circle")
+  var circlesText = elementEnter.append("text")
     // .data(csvData)
     // .enter()
     // .append("text")
     .attr("x", d => xLinearScale(d[chosenXAxis]))
     .attr("y", d => yLinearScale(d[chosenYAxis]))
-    .attr("dy", ".25em")
+    .attr("dy", ".35em")
     .text(d => d.abbr)
     .classed("stateText", true);
 
@@ -360,7 +360,7 @@ d3.csv("assets/data/data.csv").then(function (csvData) {
       //   chosenXAxis = value;
       // console.log(chosenXAxis)
 
-      // functions here found above csv import
+      // // functions here found above csv import
       // // updates x scale for new data
       // xLinearScale = xScale(csvData, chosenXAxis);
 
@@ -423,24 +423,25 @@ d3.csv("assets/data/data.csv").then(function (csvData) {
       circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circles, circlesText);
 
       circlesText = renderText(circlesText, xLinearScale, chosenXAxis, yLinearScale, chosenYAxis);
-    });
+    }
+    );
 
   yLabelsGroup.selectAll("text")
     .on("click", function () {
       // get value of selection
-      // var value = d3.select(this).attr("value");
-      // if (value !== chosenYAxis) {
+      var value = d3.select(this).attr("value");
+      if (value !== chosenYAxis) {
 
       //   // replaces chosenXAxis with value
       //   chosenYAxis = value;
 
       //   // console.log(chosenXAxis)
 
-      //   // functions here found above csv import
-      //   // updates x scale for new data
+      // //   // functions here found above csv import
+      // //   // updates x scale for new data
       //   yLinearScale = yScale(csvData, chosenXAxis);
 
-      //   // updates x axis with transition
+      // //   // updates x axis with transition
       //   yAxis = renderYAxes(yLinearScale, yAxis);
 
 
@@ -476,8 +477,15 @@ d3.csv("assets/data/data.csv").then(function (csvData) {
       circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circles, circlesText);
 
       circlesText = renderText(circlesText, xLinearScale, chosenXAxis, yLinearScale, chosenYAxis);
+    }
     });
 
 }).catch(function (error) {
   console.log(error);
 });
+
+
+
+
+
+
