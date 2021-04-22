@@ -39,7 +39,7 @@ function xScale(csvData, chosenXAxis) {
 
 function yScale(csvData, chosenYAxis) {
   var yLinearScale = d3.scaleLinear()
-    .domain([d3.min(csvData, d => d[chosenYAxis]) * 0.8,
+    .domain([d3.min(csvData, d => d[chosenYAxis]) * 0.7,
     d3.max(csvData, d => d[chosenYAxis]) * 1.2
     ])
     .range([height, 0]);
