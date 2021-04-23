@@ -100,21 +100,24 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup, textGroup) {
       var xlabel = "Poverty :";
     }
     else if (chosenXAxis === "income") {
-        var xlabel = "Income";
+      var xlabel = "Income";
     }
     else {
       var xlabel = "Age:";
 }
-  if (chosenYAxis === "healthcare") {
-    ylabel = "Healthcare"
+    if (chosenYAxis === "healthcare") {
+      ylabel = "Healthcare"
+  }
+    else if (chosenYAxis === "obesity") {
+      ylabel = "Obesity"
   }
     else {
-      var ylabel = "Smokes"
+      ylabel = "Smokes"
     }
 
     var toolTip = d3.tip()
     .attr("class", "d3-tip")
-    .offset([120, -60])
+    .offset([80, -60])
     .html(function(d) {
       if (chosenXAxis === "age") {
       return (`${d.abbr}<br>${ylabel}: ${d[chosenYAxis]}% <br>${xlabel} ${d[chosenXAxis]}`);
@@ -132,7 +135,7 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup, textGroup) {
       toolTip.show(csvData, this);
     })
       // onmouseout event
-      .on("mouseout", function(csvData, index) {
+      .on("mouseout", function(csvData) {
         toolTip.hide(csvData);
       });
       textGroup
@@ -143,8 +146,6 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup, textGroup) {
           toolTip.hide(csvData);
       });
     return circlesGroup;
-
-
   }
 
 
@@ -156,7 +157,8 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup, textGroup) {
     data.poverty = +data.poverty;
     data.age = +data.age;
     data.income = +data.income;
-    // data.obesity = +data.obesity;
+
+    data.obesity = +data.obesity;
     data.smokes = +data.smokes;
     data.healthcare = +data.healthcare;
   });
@@ -228,22 +230,30 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup, textGroup) {
 
   var healthcareLabel = yLabelsGroup.append("text")
     .attr("transform", "rotate(0)")
-    .attr("y", 20 - margin.left)
+    .attr("y", 40 - margin.left)
     .attr("x", 0 - (height / 2))
     .attr("dy", "1em")
     .attr("value", "healthcare")
     .classed("active", true)
-    .text("HealthCare (%)");
+    .text("Lacks HealthCare (%)");
 
   var smokesLabel = yLabelsGroup.append("text")
     .attr("transform", "rotate(0)")
-    .attr("y", 0 - margin.left)
+    .attr("y", 20 - margin.left)
     .attr("x", 0 - (height / 2))
     .attr("dy", "1em")
     .attr("value", "smokes")
     .classed("inactive", true)
     .text("Smokes (%)");
 
+    var obesityLabel = yLabelsGroup.append("text")
+    .attr("transform", "rotate(0)")
+    .attr("y", 0 - margin.left)
+    .attr("x", 0 - (height / 2))
+    .attr("dy", "1em")
+    .attr("value", "obesity")
+    .classed("inactive", true)
+    .text("Obesity (%)");
 
   xLabelsGroup.selectAll("text")
     .on("click", function () {
@@ -293,7 +303,6 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup, textGroup) {
           .classed("active", true)
           .classed("inactive", false);
       }
-      // else
       else {
         povertyLabel
           .classed("active", false)
@@ -341,6 +350,20 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup, textGroup) {
         smokesLabel
           .classed("active", false)
           .classed("inactive", true);
+        obesityLabel
+        .classed("active", false)
+        .classed("inactive", true);
+      }
+      else if (chosenYAxis === "obesity") {
+        healthcareLabel
+        .classed("active", false)
+        .classed("inactive", true);
+        smokesLabel
+          .classed("active", false)
+          .classed("inactive", true);
+        obesityLabel
+        .classed("active", true)
+        .classed("inactive", false);
       }
       else {
         healthcareLabel
@@ -349,6 +372,9 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup, textGroup) {
         smokesLabel
           .classed("active", true)
           .classed("inactive", false);
+        obesityLabel
+          .classed("active", false)
+          .classed("inactive", true);
 
       }
 
